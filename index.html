@@ -6,11 +6,11 @@
     <title>Hoops.tn | Thrifted Basketball Sneakers</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
     
+    <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
+    
     <style>
         /* Smooth scrolling for a professional feel */
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         /* Dark Theme Background */
         body {
@@ -35,42 +35,19 @@
         }
 
         nav .logo {
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: #ff4500;
-            text-decoration: none;
-            letter-spacing: 1px;
+            font-weight: bold; font-size: 1.5rem; color: #ff4500;
+            text-decoration: none; letter-spacing: 1px;
         }
 
-        nav ul {
-            list-style: none;
-            display: flex;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul li {
-            margin-left: 20px;
-        }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 1rem;
-            transition: 0.3s;
-        }
-
-        nav ul li a:hover {
-            color: #ff4500;
-        }
+        nav ul { list-style: none; display: flex; margin: 0; padding: 0; }
+        nav ul li { margin-left: 20px; }
+        nav ul li a { color: white; text-decoration: none; font-size: 1rem; transition: 0.3s; }
+        nav ul li a:hover { color: #ff4500; }
 
         header {
-            text-align: center;
-            padding: 80px 0;
-            border-bottom: 1px solid #333;
+            text-align: center; padding: 80px 0; border-bottom: 1px solid #333;
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1546519638-68e109498ffc?q=80&w=1200');
-            background-size: cover;
-            background-position: center;
+            background-size: cover; background-position: center;
         }
 
         h1 { color: #ff4500; font-size: 4rem; margin: 0; }
@@ -81,64 +58,43 @@
         .container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            padding: 40px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+            gap: 25px; padding: 40px 20px; max-width: 1200px; margin: 0 auto;
         }
 
         .card {
-            background-color: #1e1e1e;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            transition: transform 0.3s, border-color 0.3s;
+            background-color: #1e1e1e; padding: 20px; border-radius: 12px;
+            text-align: center; transition: transform 0.3s, border-color 0.3s;
             border: 1px solid #333;
         }
 
-        .card:hover { 
-            transform: scale(1.03); 
-            border-color: #ff4500; 
-        }
+        .card:hover { transform: scale(1.03); border-color: #ff4500; }
 
         .card img {
-            width: 100%;
-            border-radius: 8px;
-            height: 220px;
-            object-fit: cover;
+            width: 100%; border-radius: 8px; height: 220px; object-fit: cover;
         }
 
-        .price {
-            color: #00ff88;
-            font-weight: bold;
-            font-size: 1.3rem;
-            margin-top: 15px;
+        .price { color: #00ff88; font-weight: bold; font-size: 1.3rem; margin-top: 15px; }
+
+        .buy-btn {
+            background-color: #ff4500; color: white; border: none;
+            padding: 12px; border-radius: 8px; width: 100%; margin-top: 15px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
         }
 
-        /* Contact Section / Footer */
+        .buy-btn:hover { background-color: #e63e00; }
+
+        /* Footer */
         footer { 
-            text-align: center; 
-            background-color: #000;
-            padding: 60px 20px;
-            margin-top: 80px;
-            border-top: 2px solid #ff4500;
+            text-align: center; background-color: #000;
+            padding: 60px 20px; margin-top: 80px; border-top: 2px solid #ff4500;
         }
-
-        footer h2 { margin-top: 0; margin-bottom: 20px; }
 
         .contact-box {
-            background: #1a1a1a;
-            display: inline-block;
-            padding: 20px 40px;
-            border-radius: 10px;
-            border: 1px solid #333;
+            background: #1a1a1a; display: inline-block; padding: 20px 40px;
+            border-radius: 10px; border: 1px solid #333;
         }
 
-        .contact-info { margin: 15px 0; font-size: 1.2rem; }
-        footer a { color: #ff4500; text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-
-        .copyright { margin-top: 30px; color: #555; font-size: 0.9rem; }
+        .loading-msg { text-align: center; color: #ff4500; padding: 20px; font-style: italic; }
     </style>
 </head>
 <body>
@@ -158,48 +114,14 @@
     </header>
 
     <h2 id="basketball">Basketball Performance</h2>
-    <div class="container">
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=500" alt="Nike Jordan">
-            <h3>Air Jordan 1 Retro</h3>
-            <p>Condition: 9/10</p>
-            <div class="price">450 TND</div>
+    <div id="basketball-loading" class="loading-msg">Loading the heat...</div>
+    <div class="container" id="basketball-grid">
         </div>
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1605348532760-6753d2c43329?q=80&w=500" alt="Nike LeBron">
-            <h3>LeBron XXI "Conchiolin"</h3>
-            <p>Condition: 8.5/10</p>
-            <div class="price">640 TND</div>
-        </div>
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=500" alt="Nike PG">
-            <h3>Nike PG 4 Trainer</h3>
-            <p>Condition: Brand New</p>
-            <div class="price">275 TND</div>
-        </div>
-    </div>
 
     <h2 id="everyday">Everyday Sneakers</h2>
-    <div class="container">
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?q=80&w=500" alt="Adidas Samba">
-            <h3>Adidas Samba OG</h3>
-            <p>Condition: 9.5/10</p>
-            <div class="price">290 TND</div>
+    <div id="everyday-loading" class="loading-msg">Loading everyday kicks...</div>
+    <div class="container" id="everyday-grid">
         </div>
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=500" alt="Nike Jordan Low">
-            <h3>Air Jordan 1 Low</h3>
-            <p>Condition: 9/10</p>
-            <div class="price">380 TND</div>
-        </div>
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500" alt="Nike Red">
-            <h3>Nike Air Max</h3>
-            <p>Condition: 8.5/10</p>
-            <div class="price">310 TND</div>
-        </div>
-    </div>
 
     <footer id="contact">
         <h2>Get in Touch</h2>
@@ -207,11 +129,75 @@
             <p class="contact-info">📞 Phone: <strong>+216 50 533 539</strong></p>
             <p class="contact-info">📧 Email: <a href="mailto:noureddinebenothmen2@gmail.com">noureddinebenothmen2@gmail.com</a></p>
         </div>
-        <p class="copyright">&copy; 2026 Hoops.tn - Built by Ahmed</p>
+        <p class="copyright">&copy; 2026 Hoops.tn - Built by Noury</p>
     </footer>
 
+    <script>
+        // REPLACE THESE WITH YOUR ACTUAL KEYS
+        const SPACE_ID = 'y9ikksp3jt5t'; 
+        const ACCESS_TOKEN = 'QxsxlDttB9-qJz6liiupqSay8O3aTIvg9rkp6WfPSl4';
+
+        const client = contentful.createClient({
+            space: SPACE_ID,
+            accessToken: ACCESS_TOKEN
+        });
+
+        async function loadSneakers() {
+            try {
+                const response = await client.getEntries({
+                    content_type: 'sneaker' // Must match your Content Model ID exactly
+                });
+
+                // Hide loading messages
+                document.getElementById('basketball-loading').style.display = 'none';
+                document.getElementById('everyday-loading').style.display = 'none';
+
+                const basketballGrid = document.getElementById('basketball-grid');
+                const everydayGrid = document.getElementById('everyday-grid');
+
+                response.items.forEach(item => {
+                    const { name, price, condition, image, category } = item.fields;
+                    
+                    // Safely get the image URL
+                    const imageUrl = image && image.fields.file ? image.fields.file.url : 'https://via.placeholder.com/500';
+
+                    // Build the HTML card
+                    const cardHTML = `
+                        <div class="card">
+                            <img src="https:${imageUrl}" alt="${name}">
+                            <h3>${name}</h3>
+                            <p>Condition: ${condition}</p>
+                            <div class="price">${price} TND</div>
+                            <button class="buy-btn" onclick="orderOnWhatsApp('${name}')">ORDER VIA WHATSAPP</button>
+                        </div>
+                    `;
+
+                    // Sort into the correct section based on Category field
+                    if (category === 'basketball') {
+                        basketballGrid.innerHTML += cardHTML;
+                    } else if (category === 'everyday') {
+                        everydayGrid.innerHTML += cardHTML;
+                    }
+                });
+            } catch (error) {
+                console.error("Contentful Error:", error);
+            }
+        }
+
+        // WhatsApp Ordering Function
+        function orderOnWhatsApp(shoeName) {
+            const phone = "21650533539";
+            const message = `Hello! I want to buy the ${shoeName} from Hoops.tn. Is it still available?`;
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Run the function when the page loads
+        loadSneakers();
+    </script>
+
     <script async type='module' src='https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js'></script>
-<zapier-interfaces-chatbot-embed is-popup='true' chatbot-id='cmnp4mgip005crpdv0fu8tip1'></zapier-interfaces-chatbot-embed>
+    <zapier-interfaces-chatbot-embed is-popup='true' chatbot-id='cmnp4mgip005crpdv0fu8tip1'></zapier-interfaces-chatbot-embed>
 
 </body>
 </html>
