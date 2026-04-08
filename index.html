@@ -9,16 +9,12 @@
     <script src="https://cdn.jsdelivr.net/npm/contentful@latest/dist/contentful.browser.min.js"></script>
     
     <style>
-        /* Smooth scrolling for a professional feel */
         html { scroll-behavior: smooth; }
-
-        /* Dark Theme Background */
         body {
             background-color: #121212;
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
         }
 
         /* Sticky Navigation Bar */
@@ -52,7 +48,6 @@
 
         h1 { color: #ff4500; font-size: 4rem; margin: 0; }
         h2 { color: #ff4500; text-align: center; margin-top: 60px; font-size: 2.5rem; }
-        p { color: #bbb; }
 
         /* Sneaker Grid Layout */
         .container {
@@ -83,7 +78,6 @@
 
         .buy-btn:hover { background-color: #e63e00; }
 
-        /* Footer */
         footer { 
             text-align: center; background-color: #000;
             padding: 60px 20px; margin-top: 80px; border-top: 2px solid #ff4500;
@@ -114,26 +108,24 @@
     </header>
 
     <h2 id="basketball">Basketball Performance</h2>
-    <div id="basketball-loading" class="loading-msg">Loading the heat...</div>
-    <div class="container" id="basketball-grid">
-        </div>
+    <div id="basketball-loading" class="loading-msg">Searching for shoes...</div>
+    <div class="container" id="basketball-grid"></div>
 
     <h2 id="everyday">Everyday Sneakers</h2>
-    <div id="everyday-loading" class="loading-msg">Loading everyday kicks...</div>
-    <div class="container" id="everyday-grid">
-        </div>
+    <div id="everyday-loading" class="loading-msg">Searching for shoes...</div>
+    <div class="container" id="everyday-grid"></div>
 
     <footer id="contact">
         <h2>Get in Touch</h2>
         <div class="contact-box">
-            <p class="contact-info">📞 Phone: <strong>+216 50 533 539</strong></p>
-            <p class="contact-info">📧 Email: <a href="mailto:noureddinebenothmen2@gmail.com">noureddinebenothmen2@gmail.com</a></p>
+            <p>📞 Phone: <strong>+216 50 533 539</strong></p>
+            <p>📧 Email: <a href="mailto:noureddinebenothmen2@gmail.com">noureddinebenothmen2@gmail.com</a></p>
         </div>
-        <p class="copyright">&copy; 2026 Hoops.tn - Built by Noury</p>
+        <p style="margin-top: 30px; color: #555;">&copy; 2026 Hoops.tn - Built by Ahmed</p>
     </footer>
 
     <script>
-        // REPLACE THESE WITH YOUR ACTUAL KEYS
+        // REPLACE THESE WITH YOUR ACTUAL KEYS FROM CONTENTFUL
         const SPACE_ID = 'y9ikksp3jt5t'; 
         const ACCESS_TOKEN = 'QxsxlDttB9-qJz6liiupqSay8O3aTIvg9rkp6WfPSl4';
 
@@ -145,54 +137,60 @@
         async function loadSneakers() {
             try {
                 const response = await client.getEntries({
-                    content_type: 'sneaker' // Must match your Content Model ID exactly
+                    content_type: 'sneaker' 
                 });
 
-                // Hide loading messages
                 document.getElementById('basketball-loading').style.display = 'none';
                 document.getElementById('everyday-loading').style.display = 'none';
 
-                const basketballGrid = document.getElementById('basketball-grid');
-                const everydayGrid = document.getElementById('everyday-grid');
+                const bGrid = document.getElementById('basketball-grid');
+                const eGrid = document.getElementById('everyday-grid');
 
                 response.items.forEach(item => {
-                    const { name, price, condition, image, category } = item.fields;
+                    const f = item.fields;
                     
-                    // Safely get the image URL
-                    const imageUrl = image && image.fields.file ? image.fields.file.url : 'https://via.placeholder.com/500';
+                    // FALLBACK LOGIC: Check both lowercase and uppercase IDs
+                    const name = f.name || f.Name || "New Arrival";
+                    const price = f.price || f.Price || "---";
+                    const cond = f.condition || f.Condition || "Good";
+                    const cat = (f.category || f.Category || "basketball").toLowerCase();
+                    
+                    // IMAGE FALLBACK
+                    let imgUrl = "https://via.placeholder.com/500";
+                    const imageField = f.image || f.Image;
+                    if (imageField && imageField.fields && imageField.fields.file) {
+                        imgUrl = "https:" + imageField.fields.file.url;
+                    }
 
-                    // Build the HTML card
                     const cardHTML = `
                         <div class="card">
-                            <img src="https:${imageUrl}" alt="${name}">
+                            <img src="${imgUrl}" alt="${name}">
                             <h3>${name}</h3>
-                            <p>Condition: ${condition}</p>
+                            <p>Condition: ${cond}</p>
                             <div class="price">${price} TND</div>
-                            <button class="buy-btn" onclick="orderOnWhatsApp('${name}')">ORDER VIA WHATSAPP</button>
+                            <button class="buy-btn" onclick="order('${name}')">ORDER VIA WHATSAPP</button>
                         </div>
                     `;
 
-                    // Sort into the correct section based on Category field
-                    if (category === 'basketball') {
-                        basketballGrid.innerHTML += cardHTML;
-                    } else if (category === 'everyday') {
-                        everydayGrid.innerHTML += cardHTML;
+                    // Sort into sections
+                    if (cat === 'everyday') {
+                        eGrid.innerHTML += cardHTML;
+                    } else {
+                        // All others (and "basketball") go here
+                        bGrid.innerHTML += cardHTML;
                     }
                 });
             } catch (error) {
-                console.error("Contentful Error:", error);
+                console.error("Connection failed:", error);
             }
         }
 
-        // WhatsApp Ordering Function
-        function orderOnWhatsApp(shoeName) {
+        function order(name) {
             const phone = "21650533539";
-            const message = `Hello! I want to buy the ${shoeName} from Hoops.tn. Is it still available?`;
-            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
+            const msg = `Hello! I want to buy the ${name} from Hoops.tn.`;
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // Run the function when the page loads
         loadSneakers();
     </script>
 
